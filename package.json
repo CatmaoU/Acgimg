@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "build": "mkdir -p dist && cp -r ./* dist/ 2>/dev/null; npx javascript-obfuscator ./dist --output ./dist --exclude '*.html' --exclude '*.css' --exclude '*.png' --exclude '*.ico'"
+  },
+  "devDependencies": {
+    "javascript-obfuscator": "^4.1.1"
+  }
+}
