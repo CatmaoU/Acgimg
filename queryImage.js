@@ -3,14 +3,11 @@ function extractPixivId(input) {
     const raw = (input || '').trim();
     if (!raw) return '';
     if (/^\d+$/.test(raw)) return raw;
-
     const artworksMatch = raw.match(/artworks\/(\d+)/i);
     if (artworksMatch) return artworksMatch[1];
-
     const fallbackMatch = raw.match(/(\d{5,})/);
     return fallbackMatch ? fallbackMatch[1] : '';
 }
-
 // 检测zip压缩文件是否存在
 function checkZipExists(url) {
     return fetch(url, { method: 'HEAD', mode: 'no-cors' })
@@ -24,7 +21,6 @@ function checkZipExists(url) {
             });
         });
 }
-
 // 查询图片
 async function loadQueriedImage(rawInput) {
     const pid = extractPixivId(rawInput);
@@ -32,13 +28,11 @@ async function loadQueriedImage(rawInput) {
         setQueryStatus('请输入正确的 Pixiv 作品ID或作品链接喵', true);
         return;
     }
-
     queryBtn.disabled = true;
     normalBtn.disabled = true;
     specialBtn.disabled = true;
     setQueryStatus(`正在加载作品 ${pid} 喵`);
-
-    loadingTip.textContent = '加载中喵';
+    loadingTip.textContent = '加载中喵..';
     loadingTip.style.display = 'block';
     imgBox.classList.remove('loaded');
     img.style.opacity = '0';
@@ -49,11 +43,9 @@ async function loadQueriedImage(rawInput) {
     
     img.onload = null;
     img.onerror = null;
-
     // 图片格式
     const imageFormats = ['png', 'jpg', 'gif', 'webp'];
     let formatIndex = 0;
-
     // 优先尝试带-1后缀的多图格式
     const tryLoadWithSuffix = () => {
         if (formatIndex >= imageFormats.length) {
@@ -62,51 +54,49 @@ async function loadQueriedImage(rawInput) {
             tryLoadNoSuffix();
             return;
         }
-
         const currentFormat = imageFormats[formatIndex];
         const imgUrl = `${currentImgBase}/${pid}-1.${currentFormat}`;
         currentImgUrl = imgUrl;
-
         img.onload = () => {
             if (img.src !== currentImgUrl) return;
             currentExt = currentFormat;
             currentPageIndex = 0;
             // 保底显示1页，后续嗅探/翻页动态增加
             totalPages = 1;
-
             img.style.opacity = '1';
             imgBox.classList.add('loaded');
-            loadingTip.style.display = 'none';
             queryBtn.disabled = false;
             normalBtn.disabled = false;
             specialBtn.disabled = false;
-
             // 立刻显示页码和翻页按钮，首张加载完就能翻
             updatePageIndicator();
             pageIndicator.style.display = 'block';
             prevBtn.style.display = 'block';
             nextBtn.style.display = 'block';
             refreshPageButtons();
-
             setQueryStatus(`已加载 ${pid}，正在统计总页数喵...（${currentFormat.toUpperCase()}）`);
-
             // 启动后台异步页数嗅探
+            isSniffingDone = false;
             sniffTotalPages(pid, currentFormat).then(() => {
                 if (!sniffAbortFlag) {
                     setQueryStatus(`已加载 ${pid}，共 ${totalPages} 张喵~（${currentFormat.toUpperCase()}）`);
                 }
             });
+            // 修复：当前页加载完后，嗅探未完成则显示未完成提示
+            if (!isSniffingDone) {
+                loadingTip.textContent = '还有图片未加载完成喵~';
+                loadingTip.style.display = 'block';
+            } else {
+                loadingTip.style.display = 'none';
+            }
         };
-
         img.onerror = () => {
             if (img.src !== currentImgUrl) return;
             formatIndex++;
             tryLoadWithSuffix();
         };
-
         img.src = imgUrl;
     };
-
     // 尝试无后缀的单图格式
     const tryLoadNoSuffix = () => {
         if (formatIndex >= imageFormats.length) {
@@ -114,17 +104,15 @@ async function loadQueriedImage(rawInput) {
             tryLoadZipFormat();
             return;
         }
-
         const currentFormat = imageFormats[formatIndex];
         const imgUrl = `${currentImgBase}/${pid}.${currentFormat}`;
         currentImgUrl = imgUrl;
-
         img.onload = () => {
             if (img.src !== currentImgUrl) return;
             currentExt = currentFormat;
             totalPages = 1;
             isLastPageConfirmed = true;
-
+            isSniffingDone = true;
             img.style.opacity = '1';
             imgBox.classList.add('loaded');
             loadingTip.style.display = 'none';
@@ -133,16 +121,13 @@ async function loadQueriedImage(rawInput) {
             specialBtn.disabled = false;
             setQueryStatus(`已加载 ${pid}，共 1 张喵~（${currentFormat.toUpperCase()}）`);
         };
-
         img.onerror = () => {
             if (img.src !== currentImgUrl) return;
             formatIndex++;
             tryLoadNoSuffix();
         };
-
         img.src = imgUrl;
     };
-
     // 尝试Ugoira动图zip压缩包
     const tryLoadZipFormat = () => {
         const zipUrl = `${currentImgBase}/${pid}.zip`;
@@ -152,7 +137,7 @@ async function loadQueriedImage(rawInput) {
                 currentExt = 'zip';
                 totalPages = 1;
                 isLastPageConfirmed = true;
-
+                isSniffingDone = true;
                 img.src = zipUrl;
                 img.style.opacity = '0.2';
                 imgBox.classList.add('loaded');
@@ -171,19 +156,16 @@ async function loadQueriedImage(rawInput) {
             }
         });
     };
-
     tryLoadWithSuffix();
 }
-
-// 查询按钮点击（带防抖）
+// 查询按钮点击
 queryBtn.addEventListener('click', () => {
     clearTimeout(queryDebounceTimer);
     queryDebounceTimer = setTimeout(() => {
         loadQueriedImage(queryInput.value);
     }, 300);
 });
-
-// 回车触发查询（带防抖）
+// 回车触发查询
 queryInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         clearTimeout(queryDebounceTimer);

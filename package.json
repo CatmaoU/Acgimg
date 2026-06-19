@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "mkdir -p dist && cp index.html favicon.ico *.js dist/ && npx javascript-obfuscator ./dist --output ./dist --exclude '*.html' --exclude '*.ico'"
+    "build": "rm -rf dist && mkdir -p dist && cp index.html favicon.ico *.js dist/ && npx javascript-obfuscator ./dist --output ./dist --exclude '*.html' --exclude '*.ico' --compact true --string-array true --string-array-encoding base64 --identifier-names-generator hexadecimal"
   },
   "devDependencies": {
     "javascript-obfuscator": "^4.1.1"
