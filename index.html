@@ -185,7 +185,7 @@
             height: auto;
             object-fit: contain;
         }
-        /* 移动端适配 */
+        /* 移动端兼容 */
         @media (max-width: 768px) {
             body {
                 padding: 12px;
@@ -199,22 +199,21 @@
                 font-size: 12px;
             }
             #imgBox {
-                max-height: 60vh;
-                /* 手机端容器贴合图片 */
-                width: auto !important;
-                height: auto !important;
+                /* 组件位置固定 */
+                height: 60vh !important;
+                width: 100% !important;
+                max-width: 100% !important;
                 aspect-ratio: unset !important;
-                max-width: 100% !important;
                 min-height: auto !important;
+                max-height: none !important;
             }
-            /* 手机端图片按原始比例显示 */
+            /* 容器内自适应 */
             #randomImg {
-                width: auto !important;
-                height: auto !important;
-                max-width: 100% !important;
-                max-height: 60vh !important;
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: contain;
             }
-            /* 手机隐藏上下页按钮 */
+            /* 移动端隐藏上下页按钮 */
             #prevBtn, #nextBtn {
                 display: none !important;
             }
