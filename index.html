@@ -72,6 +72,14 @@
             font-size: 14px;
             min-height: 20px;
         }
+        /* 图片区域外层包裹 */
+        #imgWrap {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         #imgBox {
             position: relative;
             width: 100%;
@@ -198,20 +206,26 @@
                 right: 8px;
                 font-size: 12px;
             }
-            #imgBox {
-                /* 组件位置固定 */
-                height: 60vh !important;
-                width: 100% !important;
+            /* 外层包裹固定布局 */
+            #imgWrap {
+                height: 60vh;
                 max-width: 100% !important;
-                aspect-ratio: unset !important;
-                min-height: auto !important;
-                max-height: none !important;
             }
-            /* 容器内自适应 */
+            /* 内层 imgBox 贴合图片 */
+            #imgBox {
+                width: auto !important;
+                height: auto !important;
+                aspect-ratio: unset !important;
+                max-width: 100% !important;
+                min-height: auto !important;
+                max-height: 100% !important;
+            }
+            /* 图片按原始比例显示 */
             #randomImg {
-                width: 100% !important;
-                height: 100% !important;
-                object-fit: contain;
+                width: auto !important;
+                height: auto !important;
+                max-width: 100% !important;
+                max-height: 60vh !important;
             }
             /* 移动端隐藏上下页按钮 */
             #prevBtn, #nextBtn {

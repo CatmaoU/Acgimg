@@ -1,4 +1,8 @@
 (function () {
+    // 0. 创建图片区域外层包裹
+    const imgWrap = document.createElement('div');
+    imgWrap.id = 'imgWrap';
+
     // 1. 创建图片容器
     const imgBox = document.createElement('div');
     imgBox.id = 'imgBox';
@@ -9,8 +13,9 @@
     loadingTip.id = 'loadingTip';
     loadingTip.textContent = '加载中喵..';
     imgBox.appendChild(randomImg);
-    // 左上角加载提示
     imgBox.appendChild(loadingTip);
+    imgWrap.appendChild(imgBox);
+
     // 2. 翻页控制栏
     const pageControl = document.createElement('div');
     pageControl.className = 'page-control';
@@ -63,7 +68,7 @@
     fullImg.alt = '全屏查看';
     mask.appendChild(fullImg);
     // 按顺序插入到 body
-    document.body.appendChild(imgBox);
+    document.body.appendChild(imgWrap);
     document.body.appendChild(pageControl);
     document.body.appendChild(btnGroup);
     document.body.appendChild(queryWrap);
