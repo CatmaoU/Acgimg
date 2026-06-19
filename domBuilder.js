@@ -9,6 +9,7 @@
     loadingTip.id = 'loadingTip';
     loadingTip.textContent = '加载中喵..';
     imgBox.appendChild(randomImg);
+    // 左上角加载提示
     imgBox.appendChild(loadingTip);
     // 2. 翻页控制栏
     const pageControl = document.createElement('div');
@@ -87,7 +88,7 @@
         input.min = '1';
         input.max = String(maxPage);
         input.value = String(currentPage);
-        // 样式适配深色主题
+        // 样式适配深色主题，新增隐藏数字上下箭头样式
         input.style.cssText = `
             width: 30px;
             text-align: center;
