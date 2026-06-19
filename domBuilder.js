@@ -88,7 +88,7 @@
         input.min = '1';
         input.max = String(maxPage);
         input.value = String(currentPage);
-        // 样式适配深色主题，新增隐藏数字上下箭头样式
+        // 样式适配深色主题
         input.style.cssText = `
             width: 30px;
             text-align: center;
